@@ -75,6 +75,7 @@ class EmployeeService
                     'errors' => $dataValidate->errors()
                 ], 400);
             }
+
             $updateData = [];
 
             if(isset($data->name)) {
@@ -94,6 +95,12 @@ class EmployeeService
             }
 
             $employee = $this->employeeRepository->updateEmployee($id, $updateData);
+            if($employee == 0) {
+                return response()->json([
+                    'statusCode' => 404,
+                    'message' => 'Id Not Found',
+                ], 404);
+            }
             $employees = new Employee;
             $employees->id = $employee;
 

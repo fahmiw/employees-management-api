@@ -132,4 +132,24 @@ class AuthenticationTest extends TestCase
 
         $this->assertAuthenticated();
     }
+
+    public function testSuccessfulLogout()
+    {   
+        $user = User::factory()->create([
+            'email' => 'sample@test.com',
+            'password' => bcrypt('sample123'),
+        ]);
+ 
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+        $user = $this->actingAs($user, 'api');
+        
+        $this->json('GET', 'api/logout', ['token' => $token, 'Accept' => 'application/json'])
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                "statusCode",
+                "message"
+        ]);
+
+        $this->assertGuest('api');
+    }
 }
