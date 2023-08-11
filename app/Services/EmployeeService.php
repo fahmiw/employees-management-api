@@ -3,6 +3,8 @@ namespace App\Services;
 
 use App\Repositories\EmployeeRepository;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Employee;
+use App\Events\EmployeeActivity;
 use Exception;
 
 class EmployeeService 
@@ -18,7 +20,7 @@ class EmployeeService
             $dataValidate = Validator::make($data->all(), [
                 'name' => 'required|string',
                 'job_title' => 'required|string',
-                'salary' => 'required|number',
+                'salary' => 'required|numeric',
                 'department' => 'required|string',
                 'joined_date' => 'required|date'
 
@@ -39,6 +41,8 @@ class EmployeeService
                 'department' => $data->department,
                 'joined_date' => $data->joined_date
             ]);
+            
+            event(new EmployeeActivity('created', $employee, auth()->user()));
 
             return response()->json([
                 'statusCode' => 201,
@@ -58,7 +62,7 @@ class EmployeeService
             $dataValidate = Validator::make($data->all(), [
                 'name' => 'string',
                 'job_title' => 'string',
-                'salary' => 'number',
+                'salary' => 'numeric',
                 'department' => 'string',
                 'joined_date' => 'date'
 
@@ -90,11 +94,15 @@ class EmployeeService
             }
 
             $employee = $this->employeeRepository->updateEmployee($id, $updateData);
+            $employees = new Employee;
+            $employees->id = $employee;
+
+            event(new EmployeeActivity('updated', $employees, auth()->user()));
 
             return response()->json([
                 'statusCode' => 200,
                 'message' => 'Employee update successfully',
-                'data' => $employee
+                'data' => $updateData
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -107,6 +115,10 @@ class EmployeeService
     public function getAll() {
         try {
             $dataEmployee = $this->employeeRepository->getEmployeeAll();
+            $employees = new Employee;
+            $employees->id = 0;
+
+            event(new EmployeeActivity('taked', $employees, auth()->user()));
 
             return response()->json([
                 "statusCode" => 200,
@@ -124,10 +136,20 @@ class EmployeeService
     public function getById($id) {
         try {
             $dataEmployee = $this->employeeRepository->getEmployeeById($id);
+            if(!isset($dataEmployee)) {
+                return response()->json([
+                    'statusCode' => 404,
+                    'message' => 'Id Not Found',
+                ], 404);
+            }
+            $employees = new Employee;
+            $employees->id = $id;
+
+            event(new EmployeeActivity('taked', $employees, auth()->user()));
 
             return response()->json([
                 "statusCode" => 200,
-                "message" => `Data Employee id ${$id} Showed`,
+                "message" => 'Data Employee id ' . $id . ' Showed',
                 "data" => $dataEmployee
             ], 200);
         } catch (\Exception $e) {
@@ -141,10 +163,20 @@ class EmployeeService
     public function delete($id) {
         try {
             $dataEmployee = $this->employeeRepository->deleteEmployee($id);
+            if($dataEmployee == 0) {
+                return response()->json([
+                    'statusCode' => 404,
+                    'message' => 'Id Not Found',
+                ], 404);
+            }
+            $employees = new Employee;
+            $employees->id = $id;
+
+            event(new EmployeeActivity('deleted', $employees, auth()->user()));
 
             return response()->json([
                 "statusCode" => 200,
-                "message" => `Data Employee id ${$id} deleted`,
+                "message" => 'Data Employee id ' . $id .  ' deleted',
                 "data" => $dataEmployee
             ], 200);
         } catch (\Exception $e) {

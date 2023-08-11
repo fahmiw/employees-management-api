@@ -1,7 +1,7 @@
 <?php
 namespace App\Repositories;
 
-use App\Models\Employeee;
+use App\Models\Employee;
 
 class EmployeeRepository
 {
@@ -10,7 +10,7 @@ class EmployeeRepository
     }
 
     public function updateEmployee($id, $data) {
-        return Employee::where($id)
+        return Employee::where('id', '=', $id)
                         ->update($data);
     }
 
@@ -23,8 +23,8 @@ class EmployeeRepository
     }
 
     public function deleteEmployee($id) {
-        return Employee::where($id)
-                        ->delete($data);
+        return Employee::where('id', '=', $id)
+                        ->delete();
     }
 
 
