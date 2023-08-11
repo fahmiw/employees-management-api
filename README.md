@@ -82,12 +82,20 @@ Follow these steps to clone and set up the Employees Management Application API:
 
 ## Testing
 
+For test the API, used Unit Testing, just run this command:
+
+```bash
+composer test
+```
+
 ## API Endpoints
 
 The following API endpoints are available in the project,
 Postman Collection, available in answer_folder/postman_collection you can import to postman app.
 
 ## Answer Question
+
+Contains answers to problem solving questions and implementation test database
 
 ## Additional Information
 
