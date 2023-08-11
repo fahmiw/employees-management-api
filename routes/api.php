@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\KendaraanController;
+use App\Http\Controllers\Api\EmployeeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,4 +22,11 @@ Route::post("login", [UserController::class, "login"]);
 
 Route::group(["middleware" => ["auth:api"]], function(){
     Route::get("logout", [UserController::class, "logout"]);
+    Route::group(["prefix" => "employee"], function () {
+        Route::post("/", [EmployeeController::class, "add"]);
+        Route::put("/{id}", [EmployeeController::class, "edit"]);
+        Route::get("/", [EmployeeController::class, "showAll"]);
+        Route::get("/{id}", [EmployeeController::class, "showById"]);
+        Route::delete("/{id}", [EmployeeController::class, "destroy"]);
+    });
 });
