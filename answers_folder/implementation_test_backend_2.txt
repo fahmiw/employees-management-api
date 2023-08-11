@@ -1,0 +1,42 @@
+1. SELECT * FROM employees;
+
+2. SELECT COUNT(*) as manager_count FROM employees WHERE job_title = 'Manager';
+
+3. SELECT name, salary FROM employees WHERE department IN ('Sales', 'Marketing');
+
+4. SELECT AVG(salary) as average_salary FROM employees WHERE joined_date >= DATE_SUB(NOW(), INTERVAL 5 YEAR);
+
+5. SELECT e.*, SUM(sd.sales) as total_sales
+    FROM employees e
+    INNER JOIN sales_data sd ON e.id = sd.employee_id
+    GROUP BY e.name
+    ORDER BY total_sales DESC
+    LIMIT 5;
+6. SELECT e.name, e.salary, avg_dept_salary.avg_salary
+    FROM employees e
+    INNER JOIN (
+    SELECT department, AVG(salary) as avg_salary
+    FROM employees
+    GROUP BY department
+    HAVING avg_salary > (SELECT AVG(salary) FROM employees)
+    ) avg_dept_salary ON e.department = avg_dept_salary.department;
+
+7. SELECT name, total_sales, 
+    RANK() OVER (ORDER BY total_sales DESC) as ranking
+    FROM (
+        SELECT e.name, SUM(sd.sales) as total_sales
+        FROM employees e
+        INNER JOIN sales_data sd ON e.id = sd.employee_id
+        GROUP BY e.name
+    ) ranked_sales;
+
+8. DELIMITER //
+    CREATE PROCEDURE GetDepartmentEmployees(IN department_name VARCHAR(255))
+    BEGIN
+        SELECT name, salary
+        FROM employees
+        WHERE department = department_name;
+    END //
+    DELIMITER ;
+
+//Example CALL GetDepartmentEmployees('Sales');
