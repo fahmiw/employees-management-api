@@ -63,7 +63,13 @@ Follow these steps to clone and set up the Employees Management Application API:
     php artisan jwt:secret
     ```
 
-9. Running the Application
+9. Migrate Database:
+
+    ```bash
+    php artisan migrate
+    ```
+
+10. Running the Application
 
     To run the cloned Laravel application with MongoDB, execute the following commands:
     ```bash
@@ -72,7 +78,7 @@ Follow these steps to clone and set up the Employees Management Application API:
 
     This command will start the development server, and you should see a message like "Laravel development server started: http://localhost:8000".
 
-10. Open your postman and visit http://localhost:8000 to access the Employees Management Application API.
+11. Open your postman and visit http://localhost:8000 to access the Employees Management Application API.
 
 ## Testing
 
@@ -80,6 +86,8 @@ Follow these steps to clone and set up the Employees Management Application API:
 
 The following API endpoints are available in the project,
 Postman Collection, available in answer_folder/postman_collection you can import to postman app.
+
+## Answer Question
 
 ## Additional Information
 
